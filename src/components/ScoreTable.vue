@@ -144,7 +144,3 @@ function getDice(diceNumber) {
     </tbody>
   </table>
 </template>
-
-<style scoped>
-
-</style>
