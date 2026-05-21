@@ -4,7 +4,7 @@ import ScoreTable from './components/ScoreTable.vue'
 import ThrownDice from './components/ThrownDice.vue'
 
 // Dice array filled with example values
-const arrDice = ref([6,2,3,4,5]);
+const arrDice = ref([2,2,3,4,5]);
 </script>
 
 <template>

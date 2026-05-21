@@ -1,7 +1,7 @@
 <script setup>
 // Our score table for a visual representation of scores
 
-// TODO: Nog ff implementeren: three and four of a kind optellen + kleine bug (grote straat slaat aan op klein en groot)
+// TODO: Nog ff implementeren: three and four of a kind optellen
 
 import { computed } from 'vue'
 const diceNumbers = ["Enen", "Tweeën", "Drieën", "Vieren", "Vijfen", "Zessen"];
@@ -20,8 +20,9 @@ const fullhouse = computed(() => {
 });
 
 // Streets
-const smallstreet = computed(() => { return findStreets(true) - findStreets(false); });
 const bigstreet = computed(() => { return findStreets(false); });
+const smallstreet = computed(() => { return (bigstreet.value === 0 && findStreets(true)) ? 1: 0 ; });
+
 
 // Topscore
 const topscore = computed(() => {
@@ -35,21 +36,21 @@ const topscore = computed(() => {
 });
 
 const bottomhalf = computed(() => {
-  let beginscore = totalScore;
+  let beginscore = totalScore.value;
 
-  if(fullhouse > 0)
+  if(fullhouse.value > 0)
   {
     beginscore += 25;
   }
-  if(smallstreet > 0)
+  if(smallstreet.value > 0)
   {
     beginscore += 30;
   }
-  if(bigstreet > 0)
+  if(bigstreet.value > 0)
   {
     beginscore += 40;
   }
-  if(topscore > 0)
+  if(topscore.value > 0)
   {
     beginscore += 50;
   }
@@ -62,40 +63,42 @@ const totals = [];
 
 for(let i = 0; i < 6; i++)
 {
-  totals.push(computed(() => {  return getDice(i); }))
+  totals.push(computed(() => {  return getDice(i + 1); }))
 }
 
 function findStreets(small)
 {
   // Failures, allow the first to fail, terminate and return 0 on second failure. Remove this for big street.
   let failures = 0;
-  let allowfail = (small.value === true) ? 1: 0;
+  let fails = small ? 2: 1;
 
   for(let i = 1; i < 5; i++) {
-    if(allowfail > 0 && failures > allowfail)
-    {
-      break;
-    }
-    if(mod.value[i - 1] !== mod.value[i] + 1)
-    {
-      failures++;
-    }
-    if(i === 4) return 1; // TODO: Aanpassen aan grote en kleine straat
-  }
-  // If not found rinse and repeat backwards
-  failures = 0;
-
-  for(let i = 4; i > 0; i--) {
-    if(allowfail > 0 && failures > allowfail)
+    if(failures >= fails)
     {
       return 0;
     }
-    if(mod.value[i - 1] !== mod.value[i] + 1)
+    if(mod.value[i - 1] + 1 !== (mod.value[i]))
     {
       failures++;
     }
+    //if(small && (i - failures) === 4) return 1;
   }
 
+  /* If not found rinse and repeat backwards
+  failures = 0;
+
+  for(let i = 4; i > 0; i--) {
+    if(failures >= fails)
+    {
+      return 0;
+    }
+    if(mod.value[i - 1] !== (mod.value[i] + 1))
+    {
+      failures++;
+    }
+    if(small && (i - failures) === 3) return 1;
+  }
+  */
   // Guess we found something
   return 1;
 }
