@@ -68,40 +68,38 @@ for(let i = 0; i < 6; i++)
 
 function findStreets(small)
 {
-  // Failures, allow the first to fail, terminate and return 0 on second failure. Remove this for big street.
-  let failures = 0;
-  let fails = small ? 2: 1;
+  // Sort the array, then find out if we have consecutive numbers
+  let sortedArray = mod.value.toSorted();
 
-  for(let i = 1; i < 5; i++) {
-    if(failures >= fails)
+  if(!small)
+  {
+    // If not searching for small streets, check if all numbers are consecutive
+    for(let i = 0; i < sortedArray.length - 1; i++)
     {
-      return 0;
+      if(sortedArray[i] !== sortedArray[i + 1] - 1) {
+        return 0;
+      }
     }
-    if(mod.value[i - 1] + 1 !== (mod.value[i]))
+  }
+  else
+  {
+    // Allow for a single failure whilest checking for small streets
+    let failures = 0;
+
+    for(let i = 0; i < sortedArray.length - 1; i++)
     {
-      failures++;
+      if(sortedArray[i] !== sortedArray[i + 1] - 1) {
+        failures += 1;
+      }
+      if(failures > 1)
+      {
+        return 0;
+      }
     }
-    //if(small && (i - failures) === 4) return 1;
   }
 
-  /* If not found rinse and repeat backwards
-  failures = 0;
-
-  for(let i = 4; i > 0; i--) {
-    if(failures >= fails)
-    {
-      return 0;
-    }
-    if(mod.value[i - 1] !== (mod.value[i] + 1))
-    {
-      failures++;
-    }
-    if(small && (i - failures) === 3) return 1;
-  }
-  */
-  // Guess we found something
   return 1;
-}
+  }
 function getDice(diceNumber) {
   return mod.value.filter((dice) => dice === diceNumber).length;
 }
