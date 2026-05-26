@@ -15,13 +15,13 @@ const threesomes = computed(() => {  return totals.filter((total) => total.value
 const foursomes = computed(() => {  return totals.filter((total) => total.value >= 4).length;});
 
 // Full house
-const fullhouse = computed(() => {
+const fullHouse = computed(() => {
   return totals.filter((total) => total.value === 2).length > 0 && totals.filter((total) => total.value === 3).length > 0 ? 1 : 0;
 });
 
 // Streets
-const bigstreet = computed(() => { return findStreets(false); });
-const smallstreet = computed(() => { return (bigstreet.value === 0 && findStreets(true)) ? 1: 0 ; });
+const bigStreet = computed(() => { return findStreets(false); });
+const smallStreet = computed(() => { return findStreets(true); });
 
 
 // Topscore
@@ -35,27 +35,30 @@ const topscore = computed(() => {
   return 1;
 });
 
-const bottomhalf = computed(() => {
-  let beginscore = totalScore.value;
+const bottomHalf = computed(() => {
+  let beginScore = totalScore.value;
 
-  if(fullhouse.value > 0)
-  {
-    beginscore += 25;
+  if(threesomes.value > 0 || foursomes.value > 0) {
+    beginScore *= 2;
   }
-  if(smallstreet.value > 0)
+  if(fullHouse.value > 0)
   {
-    beginscore += 30;
+    beginScore += 25;
   }
-  if(bigstreet.value > 0)
+  if(smallStreet.value > 0)
   {
-    beginscore += 40;
+    beginScore += 30;
+  }
+  if(bigStreet.value > 0)
+  {
+    beginScore += 40;
   }
   if(topscore.value > 0)
   {
-    beginscore += 50;
+    beginScore += 50;
   }
 
-  return beginscore;
+  return beginScore;
 });
 
 // Dynamically create computed values and dump them in an array!
@@ -129,14 +132,14 @@ function getDice(diceNumber) {
     <tr>
       <td>Three of kind: {{threesomes}}</td>
       <td>Carré: {{foursomes}}</td>
-      <td>Full house: {{fullhouse}}</td>
-      <td>Kleine straat: {{smallstreet}}</td>
-      <td>Grote straat: {{bigstreet}}</td>
+      <td>Full house: {{fullHouse}}</td>
+      <td>Kleine straat: {{smallStreet}}</td>
+      <td>Grote straat: {{bigStreet}}</td>
       <td>Topscore: {{topscore}}</td>
       <td>Change: {{totalScore}}</td>
 
       <td>Totaal deel 1: {{totalScore}}</td>
-      <td>Totaal deel 2: {{bottomhalf}}</td>
+      <td>Totaal deel 2: {{bottomHalf}}</td>
       <td></td>
     </tr>
     </tbody>
